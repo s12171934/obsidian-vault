@@ -333,17 +333,21 @@ def project_progress(pdir, name):
         return None
     stages.sort(key=lambda s: s["no"])
     key, problems = name.split()[0], []
-    by_len = sorted(stages, key=lambda s: -len(s["name"]))
+    by_no = {s["no"]: s for s in stages}
+    codes = set()
     for f in sorted(os.listdir(sched)):
         if not f.endswith(".md"):
             continue
         rel = f"10_Projects/{name}/일정/{f}"
-        stem = f[:-3]
-        rest = stem[len(key) + 1:] if stem.startswith(key + " ") else None
-        stage = next((s for s in by_len if rest is not None and (rest == s["name"] or rest.startswith(s["name"] + " "))), None)
+        m = re.match(r"^" + re.escape(key) + r" (\d)\.(\d\d) .+\.md$", f)
+        stage = by_no.get(int(m.group(1))) if m else None
         if stage is None:
-            problems.append(f"step note not named `{key} <stage> …` for a stage folder: {rel}")
+            problems.append(f"step note not named `{key} S.TT <step>` for a stage folder: {rel}")
             continue
+        code = f"{m.group(1)}.{m.group(2)}"
+        if code in codes:
+            problems.append(f"duplicate step code {code}: {rel}")
+        codes.add(code)
         fm = front(read(os.path.join(sched, f)))
         status = fm.get("status", "").strip()
         step = {"path": f"일정/{f}"}
@@ -365,7 +369,8 @@ def project_progress(pdir, name):
         step["status"] = status
         stage["steps"].append(step)
     for s in stages:
-        s["steps"].sort(key=lambda x: (x.get("date", "9999"), x["path"]))
+        s["steps"].sort(key=lambda x: x["path"])
+    problems += check_project_docs(pdir, name, key, by_no, codes)
     progress = {"schemaVersion": 1, "project": name}
     rdir = os.path.join(pdir, "rules")
     if os.path.isdir(rdir):
@@ -380,6 +385,46 @@ def project_progress(pdir, name):
     section = ("## 타임라인\n\n> `local_index.py` 가 `일정/` 의 스텝 노트로부터 다시 쓴다. 손으로 고치지 않는다.\n\n"
                "| 스테이지 | 스텝 | 상태 | 시작 | 종료 |\n| --- | --- | --- | --- | --- |\n" + "\n".join(rows) + "\n")
     return progress, section, problems
+
+
+def check_project_docs(pdir, name, key, by_no, codes):
+    """Numbered formal docs live in their stage folder (S=0: project root), logs in 기록/; numbers are unique."""
+    problems, seen = [], {}
+    k = re.escape(key)
+    places = [("", pdir)] + [(f"{s['no']} {s['name']}", os.path.join(pdir, f"{s['no']} {s['name']}")) for s in by_no.values()]
+    places.append(("기록", os.path.join(pdir, "기록")))
+    for label, folder in places:
+        if not os.path.isdir(folder):
+            continue
+        for f in sorted(os.listdir(folder)):
+            if not f.endswith(".md") or f == "_index.md":
+                continue
+            rel = f"10_Projects/{name}/{label + '/' if label else ''}{f}"
+            if label == "기록":
+                m = re.match(r"^" + k + r" (\d)\.(\d\d)\.(L\d{3}) .+ \d{4}-\d\d-\d\d\.md$", f)
+                if not m:
+                    problems.append(f"log not named `{key} S.TT.LNNN <내용> YYYY-MM-DD`: {rel}")
+                    continue
+            else:
+                m = re.match(r"^" + k + r" (\d)\.(\d\d)\.(\d{3}) .+\.md$", f)
+                if not m:
+                    if label:  # stage folders hold numbered formal docs only
+                        problems.append(f"formal doc not named `{key} S.TT.NNN <제목>`: {rel}")
+                    continue
+                want = 0 if not label else int(label.split()[0])
+                if int(m.group(1)) != want:
+                    problems.append(f"number does not match its folder: {rel}")
+            num = ".".join(m.groups())
+            if num in seen:
+                problems.append(f"duplicate number {num}: {rel} and {seen[num]}")
+            seen[num] = rel
+            code = f"{m.group(1)}.{m.group(2)}"
+            if m.group(2) != "00" and code not in codes:
+                problems.append(f"no step note for {code}: {rel}")
+            is_log = "type/기록" in read(os.path.join(folder, f))
+            if is_log != (label == "기록"):
+                problems.append(f"type/기록 must be used exactly for notes in 기록/: {rel}")
+    return problems
 
 
 def build_projects():
