@@ -1,3 +1,24 @@
 [submodule "40_Tools/agent-dashboard"]
 	path = 40_Tools/agent-dashboard
 	url = https://github.com/s12171934/agent-dashboard.git
+[submodule "20_Agents/skills/vault-entry"]
+	path = 20_Agents/skills/vault-entry
+	url = https://github.com/s12171934/vault-entry.git
+[submodule "20_Agents/skills/vault-write-boundary"]
+	path = 20_Agents/skills/vault-write-boundary
+	url = https://github.com/s12171934/vault-write-boundary.git
+[submodule "20_Agents/skills/implementation-approach"]
+	path = 20_Agents/skills/implementation-approach
+	url = https://github.com/s12171934/implementation-approach.git
+[submodule "20_Agents/skills/claude-usage-check"]
+	path = 20_Agents/skills/claude-usage-check
+	url = https://github.com/s12171934/claude-usage-check.git
+[submodule "20_Agents/skills/aside-record"]
+	path = 20_Agents/skills/aside-record
+	url = https://github.com/s12171934/aside-record.git
+[submodule "20_Agents/skills/orca-orchestration-rules"]
+	path = 20_Agents/skills/orca-orchestration-rules
+	url = https://github.com/s12171934/orca-orchestration-rules.git
+[submodule "20_Agents/skills/orca-work-placement"]
+	path = 20_Agents/skills/orca-work-placement
+	url = https://github.com/s12171934/orca-work-placement.git

@@ -22,3 +22,11 @@ source: ai
 ## 목록
 
 > 내 스킬(서브모듈)만 한 줄씩 — `[[20_Agents/skills/<skill>/README|<skill>]]` — 용도 · 저장소. 서브모듈을 받지 않고 clone 한 환경에서는 링크 대상이 비어 있다. 외부 스킬 목록은 설치 도구의 기록 파일이 원본이다.
+
+- [[20_Agents/skills/vault-entry/README|vault-entry]] — 볼트 밖 세션이 볼트 루트를 찾아 볼트 규칙 문서로 진입 · `s12171934/vault-entry`
+- [[20_Agents/skills/vault-write-boundary/README|vault-write-boundary]] — 볼트 세션의 쓰기를 볼트 내부로 한정하는 경계 규칙 · `s12171934/vault-write-boundary`
+- [[20_Agents/skills/implementation-approach/README|implementation-approach]] — 구현 작업의 오케스트레이션 방식 선택 (카탈로그·방식 문서 포함) · `s12171934/implementation-approach`
+- [[20_Agents/skills/orca-work-placement/README|orca-work-placement]] — Orca 워크트리 배치와 에이전트 탭 명명·모델·목표 확정 · `s12171934/orca-work-placement`
+- [[20_Agents/skills/orca-orchestration-rules/README|orca-orchestration-rules]] — Orca 감독형 오케스트레이션 진입 조건과 코디네이터 의무 · `s12171934/orca-orchestration-rules`
+- [[20_Agents/skills/claude-usage-check/README|claude-usage-check]] — Claude 구독 사용량·초과 크레딧 실측 조회와 해석 · `s12171934/claude-usage-check`
+- [[20_Agents/skills/aside-record/README|aside-record]] — Aside 에이전트 실행 화면 녹화와 타임라인 노트 · `s12171934/aside-record`
