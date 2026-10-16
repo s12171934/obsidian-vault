@@ -1,0 +1,14 @@
+# 로컬 전용 도메인 — 이 환경의 작업·자동화 배치·지식·이력
+/10_Projects/
+/30_Automations/
+/50_Knowledge/
+/CHANGE_LOG.md
+
+# 기기별 앱 설정 (플러그인 data.json 에 자격증명이 들어갈 수 있음)
+/.obsidian/
+
+# R2 업로드 전 임시 버퍼
+/Attachments/
+
+.DS_Store
+.trash/
