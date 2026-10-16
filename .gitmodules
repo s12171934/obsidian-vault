@@ -1,0 +1,3 @@
+[submodule "40_Tools/agent-dashboard"]
+	path = 40_Tools/agent-dashboard
+	url = https://github.com/s12171934/agent-dashboard.git

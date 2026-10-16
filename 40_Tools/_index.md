@@ -35,4 +35,4 @@ source: ai
 
 ## 목록
 
-<!-- 작성 예정 — 서브모듈별 한 줄: 도구 이름, 저장소, 기동 방법 -->
+- `agent-dashboard/` — Claude·Codex 세션, Orca Run, `aplan` 계획을 실시간으로 보여 주는 로컬 웹 대시보드. 저장소: `s12171934/agent-dashboard`. 기동: `launchd/install.sh` (설정은 `DASH_LABEL`·`DASH_HOSTS`·`DASH_PYTHON` 환경 변수, 외부 계획 파일 경로는 `prefs.json`)
