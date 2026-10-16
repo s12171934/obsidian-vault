@@ -28,6 +28,7 @@ source: ai
 - 저장소 밖에서 참조해도 되는 것은 `bin/` 과 `exports/` 뿐이다. 30 과 스킬은 파일보다 CLI 로 의존한다.
 - Obsidian 에는 `docs/` 만 노출한다 (`src/` · `node_modules/` · `vendor/` 는 제외된 파일로 등록).
 - 도구 코드를 고치는 것은 볼트 내부 쓰기, 도구 저장소로 push 하는 것은 외부 쓰기다.
+- 도구 저장소는 루트에 `README.md` 를 둔다. 아래 「목록」이 그 파일을 위키링크한다 (볼트 링크 예외, [[폴더 구조 규칙]] §3).
 
 ## 내부 규정
 
@@ -35,4 +36,6 @@ source: ai
 
 ## 목록
 
-- `agent-dashboard/` — Claude·Codex 세션, Orca Run, `aplan` 계획을 실시간으로 보여 주는 로컬 웹 대시보드. 저장소: `s12171934/agent-dashboard`. 기동: `launchd/install.sh` (설정은 `DASH_LABEL`·`DASH_HOSTS`·`DASH_PYTHON` 환경 변수, 외부 계획 파일 경로는 `prefs.json`)
+> 서브모듈마다 한 줄 — `[[40_Tools/<tool>/README|<tool>]]` — 용도 · 저장소 · 기동. 서브모듈을 받지 않고 clone 한 환경에서는 링크 대상이 비어 있다.
+
+- [[40_Tools/agent-dashboard/README|agent-dashboard]] — Claude·Codex 세션, Orca Run, `aplan` 계획을 실시간으로 보여 주는 로컬 웹 대시보드 · `s12171934/agent-dashboard` · `launchd/install.sh` (`DASH_LABEL`·`DASH_HOSTS`·`DASH_PYTHON`)
