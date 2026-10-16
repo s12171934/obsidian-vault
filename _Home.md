@@ -16,7 +16,6 @@ source: ai
 | 볼트 규칙 | [[00_Vault/_index\|00_Vault]] |
 | 에이전트 | [[20_Agents/_index\|20_Agents]] |
 | 도구 | [[40_Tools/_index\|40_Tools]] |
-| 공유 부품 | [[90_Shared/_index\|90_Shared]] |
 
 ## 에이전트 진입 문서
 
