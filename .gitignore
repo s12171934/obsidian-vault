@@ -16,5 +16,8 @@
 # R2 업로드 전 임시 버퍼
 /Attachments/
 
+# 이관 임시 보관 — 결정 대기 문서·자동화 (비우면 폴더째 지운다)
+/temp/
+
 .DS_Store
 .trash/

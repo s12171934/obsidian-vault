@@ -258,7 +258,7 @@ def check_vault_tags(classes):
     parent_of = {tag: classes[code.rsplit(".", 1)[0]][1] for code, (_, tag) in classes.items() if "." in code}
     problems = []
     for root, dirs, files in os.walk(VAULT):
-        dirs[:] = [d for d in dirs if not d.startswith(".") and d != "node_modules"]
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d != "node_modules" and not (root == VAULT and d == "temp")]
         for f in files:
             if not f.endswith(".md"):
                 continue
@@ -472,7 +472,7 @@ def check_type_agent():
     print("[type/ · agent/ tags]")
     missing, problems = [], []
     for root, dirs, files in os.walk(VAULT):
-        dirs[:] = [d for d in dirs if not d.startswith(".") and d != "node_modules"]
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d != "node_modules" and not (root == VAULT and d == "temp")]
         for f in files:
             if not f.endswith(".md") or f in ("SKILL.md", "CLAUDE.md"):
                 continue
