@@ -24,4 +24,6 @@ source: ai
 
 ## 목록
 
-- `scripts/link-skills.sh` — 도구 스킬 디렉터리를 `20_Agents/skills/` 로 연결하는 스크립트 ([[로컬 구성 규칙]])
+- `scripts/activate.sh` — 볼트 활성화 진입점. 아래 두 스크립트를 차례로 실행한다 ([[로컬 구성 규칙]])
+- `scripts/local_index.py` — 로컬 전용 도메인의 `_index.md` 를 추적되는 `rules/` 로부터 만든다
+- `scripts/link-skills.sh` — 서브모듈을 받고 도구 스킬 디렉터리를 `20_Agents/skills/` 로 연결한다

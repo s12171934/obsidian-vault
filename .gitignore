@@ -1,7 +1,10 @@
-# 로컬 전용 도메인 — 이 환경의 작업·자동화 배치·지식·이력
-/10_Projects/
-/30_Automations/
-/50_Knowledge/
+# 로컬 전용 도메인 — 이 환경의 작업·자동화 배치·지식·이력. 각 도메인의 rules/ 만 추적한다
+/10_Projects/*
+!/10_Projects/rules/
+/30_Automations/*
+!/30_Automations/rules/
+/50_Knowledge/*
+!/50_Knowledge/rules/
 /CHANGE_LOG.md
 
 # 기기별 앱 설정 (플러그인 data.json 에 자격증명이 들어갈 수 있음)
