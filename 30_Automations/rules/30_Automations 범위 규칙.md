@@ -2,7 +2,7 @@
 title: 30_Automations 범위 규칙
 created: 2026-10-16
 updated: 2026-10-16
-tags: [meta]
+tags: [meta, agent/claude-1b219bef-b3db-4ef6-8088-81f7f0d19120]
 source: ai
 ---
 

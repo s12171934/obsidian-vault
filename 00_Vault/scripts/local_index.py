@@ -21,9 +21,17 @@ Knowledge classification (the local, git-ignored 50_Knowledge/지식 분류표.m
 - its domain/area/topic tags must be exactly the ones its number implies — `apply` rewrites them;
 - domain/area/topic tags anywhere in the vault must be registered and come with their parent tags,
   and the registry itself must be consistent.
+Projects (10_Projects/<project>/ with 일정/ and stage folders `<no> <name>/`):
+- step notes 일정/*.md are mapped to stages by file name (`<project key> <stage> …`), with status/date/endDate
+  from front matter; `<project> 타임라인.md` gets its 「타임라인」 section rewritten as a step table, and
+  progress.json is written in agent-dashboard's exports/project-progress.schema.json form (facts only).
+Tags: type/ values must be registered and every note must carry exactly one agent/ tag with a registered prefix
+(registries are read from 00_Vault/rules/노트 작성 규칙.md §3). Notes this script creates get the agent/ tag of
+the session running it.
 Problems are printed as `  ! …`; only the 50 tag rewrite is fixed automatically. Standard library only.
 """
 import datetime
+import json
 import os
 import re
 import sys
@@ -33,6 +41,12 @@ VAULT = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__))
 STRUCTURE = os.path.join(VAULT, "00_Vault", "rules", "폴더 구조 규칙.md")
 TODAY = datetime.date.today().isoformat()
 APPLY = len(sys.argv) > 1 and sys.argv[1] == "apply"
+if os.environ.get("CLAUDE_CODE_SESSION_ID"):
+    AGENT_TAG = "agent/claude-" + os.environ["CLAUDE_CODE_SESSION_ID"]
+elif os.environ.get("CODEX_THREAD_ID"):
+    AGENT_TAG = "agent/codex-" + os.environ["CODEX_THREAD_ID"]
+else:
+    AGENT_TAG = "agent/미상"
 if len(sys.argv) > 1 and sys.argv[1] not in ("apply", "check"):
     sys.exit("usage: local_index.py [check|apply]")
 
@@ -98,7 +112,7 @@ def build(domain):
     section = rules_section(domain)
     if not os.path.exists(path):
         title = f"{domain} 인덱스"
-        text = (f"---\ntitle: {title}\ncreated: {TODAY}\nupdated: {TODAY}\ntags: [meta]\nsource: ai\n---\n\n"
+        text = (f"---\ntitle: {title}\ncreated: {TODAY}\nupdated: {TODAY}\ntags: [meta, {AGENT_TAG}]\nsource: ai\n---\n\n"
                 f"# {title}\n\n> {domain_summary(domain)}\n\n상위: [[_Home]]\n\n{section}")
         write(path, text, f"create {domain}/_index.md")
         return
@@ -126,7 +140,7 @@ print("[CHANGE_LOG.md]")
 if os.path.exists(log):
     print("  = exists")
 else:
-    write(log, (f"---\ntitle: CHANGE_LOG\ncreated: {TODAY}\nupdated: {TODAY}\ntags: [meta]\nsource: ai\n---\n\n"
+    write(log, (f"---\ntitle: CHANGE_LOG\ncreated: {TODAY}\nupdated: {TODAY}\ntags: [meta, {AGENT_TAG}]\nsource: ai\n---\n\n"
                 "# CHANGE_LOG\n\n> 로컬 전용 노트의 개정 이력을 모은 단일 로그. 형식은 [[변경 이력 규칙]] 이 정한다.\n"),
           "create empty CHANGE_LOG.md")
 # ---- knowledge classification (50_Knowledge) ----
@@ -268,7 +282,7 @@ def ensure_registry():
         return
     line = next((l for l in read(NOTE_RULE).splitlines() if l.startswith("- 등록된 대분류")), "")
     rows = "".join(f"| `{c}` | {n} | `domain/{n}` |\n" for n, c in re.findall(r"`domain/([^`]+)`\((\d)\)", line))
-    text = (f"---\ntitle: 지식 분류표\ncreated: {TODAY}\nupdated: {TODAY}\ntags: [meta]\nsource: ai\n---\n\n"
+    text = (f"---\ntitle: 지식 분류표\ncreated: {TODAY}\nupdated: {TODAY}\ntags: [meta, {AGENT_TAG}]\nsource: ai\n---\n\n"
             "# 지식 분류표\n\n> 볼트 지식 분류의 등록부다 (로컬 전용, git 무시). 번호 체계와 등록·변경 절차는 "
             "[[50_Knowledge 범위 규칙]], 대분류 목록은 [[노트 작성 규칙]] §3 이 정한다.\n\n"
             "## 분류\n\n| 코드 | 이름 | 태그 |\n| --- | --- | --- |\n" + rows + "\n## 폐지 코드\n\n- 없음\n")
@@ -300,6 +314,150 @@ for path, text, what in fixes:
     write(path, text, what)
 if not problems and not fixes:
     print(f"  = {len(classes)} classes, all consistent")
+
+# ---- projects: timeline and progress.json ----
+PROJECTS = os.path.join(VAULT, "10_Projects")
+STEP_STATUS = ("scheduling", "pending", "active", "done", "failed")
+SKIP_PROJECT_DIRS = {"rules", "규칙 템플릿"}
+
+
+def project_progress(pdir, name):
+    """Return (progress dict, timeline section, problems) for a project, or None if it has no stage layout."""
+    stages = []
+    for d in os.listdir(pdir):
+        m = re.match(r"^(\d+) (.+)$", d)
+        if m and os.path.isdir(os.path.join(pdir, d)):
+            stages.append({"no": int(m.group(1)), "name": m.group(2), "steps": []})
+    sched = os.path.join(pdir, "일정")
+    if not stages or not os.path.isdir(sched):
+        return None
+    stages.sort(key=lambda s: s["no"])
+    key, problems = name.split()[0], []
+    by_len = sorted(stages, key=lambda s: -len(s["name"]))
+    for f in sorted(os.listdir(sched)):
+        if not f.endswith(".md"):
+            continue
+        rel = f"10_Projects/{name}/일정/{f}"
+        stem = f[:-3]
+        rest = stem[len(key) + 1:] if stem.startswith(key + " ") else None
+        stage = next((s for s in by_len if rest is not None and (rest == s["name"] or rest.startswith(s["name"] + " "))), None)
+        if stage is None:
+            problems.append(f"step note not named `{key} <stage> …` for a stage folder: {rel}")
+            continue
+        fm = front(read(os.path.join(sched, f)))
+        status = fm.get("status", "").strip()
+        step = {"path": f"일정/{f}"}
+        if status not in STEP_STATUS:
+            problems.append(f"step status must be one of {'/'.join(STEP_STATUS)}: {rel}")
+            continue
+        for k in ("date", "endDate"):
+            v = fm.get(k, "").strip()
+            if v:
+                if not re.fullmatch(r"\d{4}-\d\d-\d\d", v):
+                    problems.append(f"{k} is not YYYY-MM-DD: {rel}")
+                step[k] = v
+        if status == "scheduling" and ("date" in step or "endDate" in step):
+            problems.append(f"scheduling step must not have dates (left out of progress.json): {rel}")
+            continue
+        if status != "scheduling" and "date" not in step:
+            problems.append(f"{status} step needs date (left out of progress.json): {rel}")
+            continue
+        step["status"] = status
+        stage["steps"].append(step)
+    for s in stages:
+        s["steps"].sort(key=lambda x: (x.get("date", "9999"), x["path"]))
+    progress = {"schemaVersion": 1, "project": name}
+    rdir = os.path.join(pdir, "rules")
+    if os.path.isdir(rdir):
+        for f in sorted(os.listdir(rdir)):
+            m = f.endswith(".md") and re.search(r"템플릿: (\S+) 템플릿", read(os.path.join(rdir, f)))
+            if m:
+                progress["template"] = m.group(1)
+                break
+    progress["stages"] = stages
+    rows = [f"| {s['no']} {s['name']} | [[{os.path.basename(x['path'])[:-3]}]] | {x['status']} | "
+            f"{x.get('date', '—')} | {x.get('endDate', '—')} |" for s in stages for x in s["steps"]]
+    section = ("## 타임라인\n\n> `local_index.py` 가 `일정/` 의 스텝 노트로부터 다시 쓴다. 손으로 고치지 않는다.\n\n"
+               "| 스테이지 | 스텝 | 상태 | 시작 | 종료 |\n| --- | --- | --- | --- | --- |\n" + "\n".join(rows) + "\n")
+    return progress, section, problems
+
+
+def build_projects():
+    print("[10_Projects progress]")
+    if not os.path.isdir(PROJECTS):
+        return
+    seen = False
+    for name in sorted(os.listdir(PROJECTS)):
+        pdir = os.path.join(PROJECTS, name)
+        if name in SKIP_PROJECT_DIRS or name.startswith(".") or not os.path.isdir(pdir):
+            continue
+        res = project_progress(pdir, name)
+        if res is None:
+            continue
+        seen = True
+        progress, section, problems = res
+        for msg in problems:
+            print("  ! " + msg)
+        jpath = os.path.join(pdir, "progress.json")
+        jtext = json.dumps(progress, ensure_ascii=False, indent=2) + "\n"
+        if not os.path.exists(jpath) or read(jpath) != jtext:
+            write(jpath, jtext, f"write 10_Projects/{name}/progress.json")
+        tpath = os.path.join(pdir, f"{name} 타임라인.md")
+        if os.path.exists(tpath):
+            old = read(tpath)
+            m = re.search(r"^## 타임라인\n.*?(?=^## |\Z)", old, re.M | re.S)
+            new = (old[:m.start()] + section + ("\n" if old[m.end():] else "") + old[m.end():]) if m \
+                else old.rstrip("\n") + "\n\n" + section
+            if new != old:
+                new = re.sub(r"^updated: .*$", f"updated: {TODAY}", new, count=1, flags=re.M)
+                write(tpath, new, f"rewrite 「타임라인」 in 10_Projects/{name}/{name} 타임라인.md")
+        else:
+            print(f"  ! no timeline note: 10_Projects/{name}/{name} 타임라인.md")
+    if not seen:
+        print("  = no project with 일정/ and stage folders")
+
+
+# ---- tag registries: type/ and agent/ ----
+def check_type_agent():
+    rule = read(NOTE_RULE)
+    m = re.search(r"작업 성격 \(`type/`\)\*\* — 등록된 값: (.+)$", rule, re.M)
+    types = set(re.findall(r"`([^`/]+)`", m.group(1).split(".")[0])) if m else set()
+    m = re.search(r"등록된 도구 접두사: (.+?)\. ", rule)
+    prefixes = re.findall(r"`([a-z0-9-]+)`\(", m.group(1)) if m else []
+    print("[type/ · agent/ tags]")
+    missing, problems = [], []
+    for root, dirs, files in os.walk(VAULT):
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d != "node_modules"]
+        for f in files:
+            if not f.endswith(".md") or f in ("SKILL.md", "CLAUDE.md"):
+                continue
+            path = os.path.join(root, f)
+            rel = os.path.relpath(path, VAULT)
+            tm = re.search(r"^tags:\s*\[(.*)\]\s*$", read(path), re.M)
+            if not tm:
+                continue
+            tags = [x.strip() for x in tm.group(1).split(",")]
+            for x in tags:
+                if x.startswith("type/") and x[5:] not in types and "<" not in x:
+                    problems.append(f"unregistered {x}: {rel}")
+            agents = [x for x in tags if x.startswith("agent/")]
+            if not agents:
+                missing.append(rel)
+            elif len(agents) > 1:
+                problems.append(f"more than one agent/ tag: {rel}")
+            elif agents[0] != "agent/미상" and "<" not in agents[0] and \
+                    not any(agents[0].startswith(f"agent/{p}-") and len(agents[0]) > len(p) + 7 for p in prefixes):
+                problems.append(f"agent/ tag without a registered prefix: {rel}")
+    for msg in problems:
+        print("  ! " + msg)
+    if missing:
+        print(f"  ! {len(missing)} notes without an agent/ tag, e.g. " + "; ".join(missing[:3]))
+    if not problems and not missing:
+        print(f"  = {len(types)} type values, prefixes {', '.join(prefixes)}; all notes tagged")
+
+
+build_projects()
+check_type_agent()
 
 if not APPLY:
     print("(check only — run with 'apply' to make these changes)")
