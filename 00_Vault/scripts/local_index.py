@@ -12,7 +12,9 @@ For each local domain (10_Projects, 30_Automations, 50_Knowledge):
   bumped when it changes.
 A missing CHANGE_LOG.md is created as an empty log.
 
-Knowledge classification (50_Knowledge/rules/지식 분류표.md is the source):
+Knowledge classification (the local, git-ignored 50_Knowledge/지식 분류표.md is the registry):
+- a missing registry is created with only the 대분류 rows, taken from the tracked domain list in
+  00_Vault/rules/노트 작성 규칙.md §3; 50_Knowledge/_index.md gets a 「목록」 link to it;
 - every 50_Knowledge folder must be `<code> <name>` of a registered class (or `<code>.00 일반`), nested
   D / D.AA / D.AA.SS, and every note other than _index.md must be `D.AA.SS.NNN <title>.md` inside the
   folder of its code, with `title` equal to the file name and no duplicate numbers;
@@ -129,7 +131,8 @@ else:
           "create empty CHANGE_LOG.md")
 # ---- knowledge classification (50_Knowledge) ----
 KNOW = os.path.join(VAULT, "50_Knowledge")
-CLASS_TABLE = os.path.join(KNOW, "rules", "지식 분류표.md")
+CLASS_TABLE = os.path.join(KNOW, "지식 분류표.md")
+NOTE_RULE = os.path.join(VAULT, "00_Vault", "rules", "노트 작성 규칙.md")
 CLASS_AXES = ("domain/", "area/", "topic/")
 NUM_RE = re.compile(r"^(\d\.\d\d\.\d\d\.\d{3}) (.+)\.md$")
 
@@ -137,7 +140,7 @@ NUM_RE = re.compile(r"^(\d\.\d\d\.\d\d\.\d{3}) (.+)\.md$")
 def load_classes():
     classes, problems = {}, []
     if not os.path.exists(CLASS_TABLE):
-        return classes, ["missing 50_Knowledge/rules/지식 분류표.md"]
+        return classes, ["missing 50_Knowledge/지식 분류표.md"]
     for line in read(CLASS_TABLE).splitlines():
         m = re.match(r"^\| `([0-9.]+)` \| ([^|]+?) \| `([^`]+)` \|", line)
         if not m:
@@ -210,6 +213,8 @@ def check_knowledge(classes):
             path = os.path.join(root, f)
             relf = os.path.relpath(path, VAULT)
             m = NUM_RE.match(f)
+            if not parts and f == "지식 분류표.md":
+                continue
             if not m or len(parts) != 3 or not m.group(1).startswith(codes[-1] + "."):
                 problems.append(f"name or place does not match a class number: {relf}")
                 continue
@@ -258,7 +263,32 @@ def check_vault_tags(classes):
     return problems
 
 
+def ensure_registry():
+    if os.path.exists(CLASS_TABLE):
+        return
+    line = next((l for l in read(NOTE_RULE).splitlines() if l.startswith("- 등록된 대분류")), "")
+    rows = "".join(f"| `{c}` | {n} | `domain/{n}` |\n" for n, c in re.findall(r"`domain/([^`]+)`\((\d)\)", line))
+    text = (f"---\ntitle: 지식 분류표\ncreated: {TODAY}\nupdated: {TODAY}\ntags: [meta]\nsource: ai\n---\n\n"
+            "# 지식 분류표\n\n> 볼트 지식 분류의 등록부다 (로컬 전용, git 무시). 번호 체계와 등록·변경 절차는 "
+            "[[50_Knowledge 범위 규칙]], 대분류 목록은 [[노트 작성 규칙]] §3 이 정한다.\n\n"
+            "## 분류\n\n| 코드 | 이름 | 태그 |\n| --- | --- | --- |\n" + rows + "\n## 폐지 코드\n\n- 없음\n")
+    write(CLASS_TABLE, text, "create 50_Knowledge/지식 분류표.md (대분류 rows only)")
+
+
+def ensure_registry_link():
+    path = os.path.join(KNOW, "_index.md")
+    if not os.path.exists(path) or "[[지식 분류표]]" in read(path):
+        return
+    old = read(path)
+    item = "- [[지식 분류표]] — 분류 코드·이름·태그 등록부\n"
+    m = re.search(r"^## 목록\n\n?", old, re.M)
+    new = old[:m.end()] + item + old[m.end():] if m else old.rstrip("\n") + "\n\n## 목록\n\n" + item
+    write(path, new, "link 지식 분류표 from 50_Knowledge/_index.md 「목록」")
+
+
 print("[50_Knowledge classification]")
+ensure_registry()
+ensure_registry_link()
 classes, problems = load_classes()
 fixes = []
 if classes:
