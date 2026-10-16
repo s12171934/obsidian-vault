@@ -7,6 +7,9 @@
 # 기기별 앱 설정 (플러그인 data.json 에 자격증명이 들어갈 수 있음)
 /.obsidian/
 
+# 로컬 스킬 목록 — 외부(npx skills)·로컬 전용 스킬은 무시. 내 스킬은 git submodule add -f 로 추적
+/20_Agents/skills/*
+
 # R2 업로드 전 임시 버퍼
 /Attachments/
 
