@@ -7,7 +7,8 @@
 # - Directory links: each root in DIR_LINK_ROOTS becomes a symlink to <vault>/20_Agents/skills,
 #   so adding or removing a skill in the vault changes that tool's skill list at once.
 #   An existing real directory is moved aside to <root>.bak-<timestamp> (never deleted); its
-#   symlinked entries are recreated and its copied skills are copied into the vault skill list
+#   symlinked entries are recreated with their resolved absolute target (dead links are skipped)
+#   and its copied skills are copied into the vault skill list
 #   (both are git-ignored there), unless the vault already has a skill of that name.
 # - Per-skill links: directories managed by another program (PER_SKILL_ROOTS) are not replaced;
 #   each of my skills (submodules under 20_Agents/skills) gets its own link there, and links that
@@ -94,7 +95,13 @@ for root in "${DIR_LINK_ROOTS[@]}"; do
       if [ -e "$SKILLS/$name" ] || [ -L "$SKILLS/$name" ]; then
         say "  = keep vault's $name (old entry left in backup)"
       elif [ -L "$entry" ]; then
-        act "recreate link $name -> $(readlink "$entry")" ln -s "$(readlink "$entry")" "$SKILLS/$name"
+        # recreate with the resolved absolute target — a relative target would break at the new location
+        abs="$(resolved "$entry")"
+        if [ -z "$abs" ]; then
+          say "  ! skip dead link $name -> $(readlink "$entry") (left in backup)"
+        else
+          act "recreate link $name -> $abs" ln -s "$abs" "$SKILLS/$name"
+        fi
       elif [ -d "$entry" ]; then
         act "copy skill $name into the vault list (git-ignored)" cp -R "$entry" "$SKILLS/$name"
       fi
