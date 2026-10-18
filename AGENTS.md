@@ -1,7 +1,7 @@
 ---
 title: AGENTS
 created: 2026-10-16
-updated: 2026-10-16
+updated: 2026-10-18
 tags: [meta, agent/claude-1b219bef-b3db-4ef6-8088-81f7f0d19120]
 source: ai
 ---
@@ -25,7 +25,7 @@ source: ai
 | `00_Vault/` | 추적 | 볼트 문서 작성·정리·사용 규칙 |
 | `10_Projects/` | 무시 (`rules/` 추적) | 프로젝트 구성 |
 | `20_Agents/` | 추적 | 에이전트 행동 정의 — 로컬 스킬 목록의 원본 (내 스킬은 서브모듈, 외부·로컬 전용 스킬은 무시) |
-| `30_Automations/` | 무시 (`rules/` 추적) | 자동화 배치 등록부와 30 전용 자산 (별도 비공개 저장소) |
+| `30_Automations/` | 무시 (`rules/` 추적) | 자동화 배치 등록부와 30 전용 자산 |
 | `40_Tools/` | 추적 | 도구 저장소(코드 + 명세) — 도구별 서브모듈 |
 | `50_Knowledge/` | 무시 (`rules/` 추적) | 학습·참고 지식 |
 | `Attachments/` | 무시 | R2 업로드 버퍼 |
