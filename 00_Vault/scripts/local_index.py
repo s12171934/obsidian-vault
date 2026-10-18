@@ -336,7 +336,7 @@ def project_progress(pdir, name):
     by_no = {s["no"]: s for s in stages}
     codes = set()
     for f in sorted(os.listdir(sched)):
-        if not f.endswith(".md"):
+        if not f.endswith(".md") or f == "_index.md":
             continue
         rel = f"10_Projects/{name}/일정/{f}"
         m = re.match(r"^" + re.escape(key) + r" (\d)\.(\d\d) .+\.md$", f)
