@@ -22,3 +22,6 @@
 [submodule "20_Agents/skills/orca-work-placement"]
 	path = 20_Agents/skills/orca-work-placement
 	url = https://github.com/s12171934/orca-work-placement.git
+[submodule "20_Agents/skills/vault-project-doc"]
+	path = 20_Agents/skills/vault-project-doc
+	url = https://github.com/s12171934/vault-project-doc.git

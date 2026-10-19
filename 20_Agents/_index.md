@@ -1,7 +1,7 @@
 ---
 title: 20_Agents 인덱스
 created: 2026-10-16
-updated: 2026-10-16
+updated: 2026-10-19
 tags: [meta, agent/claude-1b219bef-b3db-4ef6-8088-81f7f0d19120]
 source: ai
 ---
@@ -30,3 +30,4 @@ source: ai
 - [[20_Agents/skills/orca-orchestration-rules/README|orca-orchestration-rules]] — Orca 감독형 오케스트레이션 진입 조건과 코디네이터 의무 · `s12171934/orca-orchestration-rules`
 - [[20_Agents/skills/claude-usage-check/README|claude-usage-check]] — Claude 구독 사용량·초과 크레딧 실측 조회와 해석 · `s12171934/claude-usage-check`
 - [[20_Agents/skills/aside-record/README|aside-record]] — Aside 에이전트 실행 화면 녹화와 타임라인 노트 · `s12171934/aside-record`
+- [[20_Agents/skills/vault-project-doc/README|vault-project-doc]] — 볼트 프로젝트 문서를 빈 문서 → 스텝 연결 → 내용 작성 순서로 만들기 · `s12171934/vault-project-doc`
