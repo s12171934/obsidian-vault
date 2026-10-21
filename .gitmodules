@@ -25,3 +25,6 @@
 [submodule "20_Agents/skills/vault-project-doc"]
 	path = 20_Agents/skills/vault-project-doc
 	url = https://github.com/s12171934/vault-project-doc.git
+[submodule "20_Agents/skills/qa-ticket-driver"]
+	path = 20_Agents/skills/qa-ticket-driver
+	url = https://github.com/s12171934/qa-ticket-driver.git
