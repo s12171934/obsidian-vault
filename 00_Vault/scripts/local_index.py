@@ -339,7 +339,7 @@ def project_progress(pdir, name):
         if not f.endswith(".md") or f == "_index.md":
             continue
         rel = f"10_Projects/{name}/일정/{f}"
-        m = re.match(r"^" + re.escape(key) + r" (\d)\.(\d\d) .+\.md$", f)
+        m = re.match(r"^" + re.escape(key) + r" (\d)\.(\d{2,3}) .+\.md$", f)
         stage = by_no.get(int(m.group(1))) if m else None
         if stage is None:
             problems.append(f"step note not named `{key} S.TT <step>` for a stage folder: {rel}")
@@ -401,12 +401,12 @@ def check_project_docs(pdir, name, key, by_no, codes):
                 continue
             rel = f"10_Projects/{name}/{label + '/' if label else ''}{f}"
             if label == "기록":
-                m = re.match(r"^" + k + r" (\d)\.(\d\d)\.(L\d{3}) .+ \d{4}-\d\d-\d\d\.md$", f)
+                m = re.match(r"^" + k + r" (\d)\.(\d{2,3})\.(L\d{3}) .+ \d{4}-\d\d-\d\d\.md$", f)
                 if not m:
                     problems.append(f"log not named `{key} S.TT.LNNN <내용> YYYY-MM-DD`: {rel}")
                     continue
             else:
-                m = re.match(r"^" + k + r" (\d)\.(\d\d)\.(\d{3}) .+\.md$", f)
+                m = re.match(r"^" + k + r" (\d)\.(\d{2,3})\.(\d{3}) .+\.md$", f)
                 if not m:
                     if label:  # stage folders hold numbered formal docs only
                         problems.append(f"formal doc not named `{key} S.TT.NNN <제목>`: {rel}")

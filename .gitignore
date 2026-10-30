@@ -25,3 +25,6 @@ __pycache__/
 
 .DS_Store
 .trash/
+
+# 로컬 전용 도구 — 사내 값 내장, push 금지
+/40_Tools/header-injector/
