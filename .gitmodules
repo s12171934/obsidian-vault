@@ -28,3 +28,6 @@
 [submodule "20_Agents/skills/qa-ticket-driver"]
 	path = 20_Agents/skills/qa-ticket-driver
 	url = https://github.com/s12171934/qa-ticket-driver.git
+[submodule "20_Agents/skills/ego-record"]
+	path = 20_Agents/skills/ego-record
+	url = https://github.com/s12171934/ego-record.git
