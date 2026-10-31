@@ -31,3 +31,6 @@
 [submodule "20_Agents/skills/ego-record"]
 	path = 20_Agents/skills/ego-record
 	url = https://github.com/s12171934/ego-record.git
+[submodule "40_Tools/workflow-canvas"]
+	path = 40_Tools/workflow-canvas
+	url = https://github.com/s12171934/workflow-canvas.git
