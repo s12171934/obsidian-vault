@@ -28,3 +28,4 @@ __pycache__/
 
 # 로컬 전용 도구 — 사내 값 내장, push 금지
 /40_Tools/header-injector/
+/40_Tools/artifact-share/
