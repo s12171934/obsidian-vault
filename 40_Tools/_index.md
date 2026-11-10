@@ -22,5 +22,4 @@ source: ai
 
 - [[40_Tools/agent-dashboard/README|agent-dashboard]] — Claude·Codex 세션, Orca Run, `aplan` 계획을 실시간으로 보여 주는 로컬 웹 대시보드 · `s12171934/agent-dashboard` · `launchd/install.sh` (`DASH_LABEL`·`DASH_HOSTS`·`DASH_PYTHON`)
 - [[40_Tools/header-injector/README|header-injector]] — 장애 주입 헤더를 개발자도구 패널에서 여러 규칙으로 켜고 끄는 Chrome 확장 · 로컬 전용(사내 값 내장, push 금지, 서브모듈 미등록) · 저장소 폴더를 Chrome 에 로드
-- `artifact-share` — (자동화 해제 2026-11-10: ego lite 에이전트 이동 때 아티팩트 페이지가 튕겨 훅을 뗌, 공유는 수동) 보조 Claude 계정 Artifact 를 ego lite 로 주 계정에 편집자 공유하던 도구 · 로컬 전용(사내 값, push 금지, 서브모듈 미등록) · 필요하면 `sh bin/share.sh` 를 손으로 실행
 - [[40_Tools/workflow-canvas/README|workflow-canvas]] — Orca CLI의 Run·Task를 그래프로 가져와 워크플로 편집과 단계별 실행 상태를 보여 주는 로컬 웹뷰 · `s12171934/workflow-canvas` · `bin/workflow-canvas`
