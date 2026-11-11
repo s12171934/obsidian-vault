@@ -34,3 +34,6 @@
 [submodule "40_Tools/workflow-canvas"]
 	path = 40_Tools/workflow-canvas
 	url = https://github.com/s12171934/workflow-canvas.git
+[submodule "40_Tools/checkbox-driver"]
+	path = 40_Tools/checkbox-driver
+	url = https://github.com/s12171934/checkbox-driver.git
