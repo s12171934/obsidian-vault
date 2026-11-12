@@ -37,3 +37,6 @@
 [submodule "40_Tools/checkbox-driver"]
 	path = 40_Tools/checkbox-driver
 	url = https://github.com/s12171934/checkbox-driver.git
+[submodule "40_Tools/widget-studio"]
+	path = 40_Tools/widget-studio
+	url = https://github.com/s12171934/widget-studio.git
