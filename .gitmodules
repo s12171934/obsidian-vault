@@ -43,3 +43,6 @@
 [submodule "40_Tools/script-driver-generator"]
 	path = 40_Tools/script-driver-generator
 	url = https://github.com/s12171934/script-driver-generator.git
+[submodule "20_Agents/skills/mobile-record"]
+	path = 20_Agents/skills/mobile-record
+	url = https://github.com/s12171934/mobile-record.git
