@@ -40,3 +40,6 @@
 [submodule "40_Tools/widget-studio"]
 	path = 40_Tools/widget-studio
 	url = https://github.com/s12171934/widget-studio.git
+[submodule "40_Tools/script-driver-generator"]
+	path = 40_Tools/script-driver-generator
+	url = https://github.com/s12171934/script-driver-generator.git
