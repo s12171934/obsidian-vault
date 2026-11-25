@@ -24,5 +24,5 @@ source: ai
 - [[40_Tools/checkbox-driver/README|checkbox-driver]] — 「티켓 체크박스 커밋 리뷰」 방식을 LLM 없이 모는 스크립트 드라이버(스케줄러·티켓 드라이버) · `s12171934/checkbox-driver` · `bin/cbd <키> schedule`
 - [[40_Tools/script-driver-generator/README|script-driver-generator]] — 구조화된 작업 계약으로 스크립트 드라이버를 생성·검증하는 별도 도구의 정의 초안 · `s12171934/script-driver-generator` · CLI 구현 전
 - [[40_Tools/header-injector/README|header-injector]] — 장애 주입 헤더를 개발자도구 패널에서 여러 규칙으로 켜고 끄는 Chrome 확장 · 로컬 전용(사내 값 내장, push 금지, 서브모듈 미등록) · 저장소 폴더를 Chrome 에 로드
-- [[40_Tools/widget-studio/README|widget-studio]] — 문구·시계·D-day·사진 템플릿으로 아이폰 홈 화면 위젯을 디자인하는 iOS 앱(SwiftUI·WidgetKit) · `s12171934/widget-studio` · `bin/widget-studio run`
+- [[40_Tools/widget-studio/README|widget-studio]] — 꾸미기·체크리스트·카운터·집중 타이머·포모도로·달력 템플릿으로 iPhone·iPad 홈 화면 위젯을 디자인하는 앱(SwiftUI·WidgetKit, iPad X-large 지원) · `s12171934/widget-studio` · `bin/widget-studio run`
 - [[40_Tools/workflow-canvas/README|workflow-canvas]] — Orca CLI의 Run·Task를 그래프로 가져와 워크플로 편집과 단계별 실행 상태를 보여 주는 로컬 웹뷰 · `s12171934/workflow-canvas` · `bin/workflow-canvas`
